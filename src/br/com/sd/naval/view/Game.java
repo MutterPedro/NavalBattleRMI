@@ -5,6 +5,8 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
+import java.net.NetworkInterface;
+import java.util.Enumeration
 
 import br.com.sd.naval.interfaces.NavalBattle;
 import br.com.sd.naval.models.User;
@@ -23,6 +25,20 @@ public class Game{
 			InetAddress IP=InetAddress.getLocalHost();
             System.setProperty("java.rmi.server.hostname",IP.getHostAddress());            
 			
+            Enumeration e = NetworkInterface.getNetworkInterfaces();
+			while(e.hasMoreElements())
+			{
+    			NetworkInterface n = (NetworkInterface) e.nextElement();
+    			Enumeration ee = n.getInetAddresses();
+   				 while (ee.hasMoreElements()){
+        			InetAddress i = (InetAddress) ee.nextElement();
+
+        			if(!n.isLoopback()){
+        				System.out.println("IP do jogo" + i.getHostAddress());
+        			}
+    			}
+			}
+
 			//Create and export a remote object
 			User user = new User();			
 			NavalBattle stub = (NavalBattle) UnicastRemoteObject.exportObject(user,0);
