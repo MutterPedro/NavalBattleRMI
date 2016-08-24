@@ -33,12 +33,13 @@ public class NavalMap {
 	}
 	public void showMap(){
 		for(int i=0;i<this.numRow;i++){
-			System.out.print("___");
+			System.out.print(" ____");
 		}
 		System.out.println();
 		for(int i=0;i<this.numRow;i++){
+			System.out.print(i+1);
 			for(int j=0;j<this.numCol;j++){
-				System.out.print("|_");
+				System.out.print(" |_");
 				switch(this.map[i][j]){
 					case 0:
 						System.out.print("___");
@@ -54,7 +55,7 @@ public class NavalMap {
 						break;
 				}
 			}
-			System.out.print("|_");
+			System.out.print("|");
 			System.out.println();
 		}
 	}
