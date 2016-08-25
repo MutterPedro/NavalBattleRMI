@@ -32,11 +32,19 @@ public class NavalMap {
 		this.map = map;
 	}
 	public void showMap(){
+		
+		char alfa = 'A';
+		System.out.print("  ");
 		for(int i=0;i<this.numRow;i++){
-			System.out.print("___");
+			System.out.print(" " + (i+1) + " ");
+			System.out.print(" ");
 		}
+		
 		System.out.println();
 		for(int i=0;i<this.numRow;i++){
+			
+			System.out.print(alfa);
+			alfa++;
 			for(int j=0;j<this.numCol;j++){
 				System.out.print("|_");
 				switch(this.map[i][j]){
@@ -54,7 +62,7 @@ public class NavalMap {
 						break;
 				}
 			}
-			System.out.print("|_");
+			System.out.print("|");
 			System.out.println();
 		}
 	}

@@ -55,12 +55,17 @@ public class User implements NavalBattle{
 	public boolean attack(int row, int col, NavalBattle stub) throws RemoteException {
 		System.out.println("Atacou "+row+"/"+col);
 		stub.handleAttack(row, col);
+		
+		
 		return false;
 	}
 
 	@Override
 	public boolean handleAttack(int row, int col) throws RemoteException {
 		System.out.println("Foi atacado "+row+"/"+col);
+		
+		
+		
 		return false;
 	}
 	
