@@ -45,6 +45,7 @@ public class Ship {
 				if (position.getX() + i < 0 || position.getX() + i >= map.getNumCol()
 						|| map.getMap()[position.getX() + i][position.getY()] == 1) {
 				 return false;
+
 				}
 			}
 			List<Position> list = new ArrayList<>();

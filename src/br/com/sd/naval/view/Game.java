@@ -23,7 +23,6 @@ public class Game {
 	public static void main(String[] args) {
 
 		try {
-			
 			  if(args.length < 1){ System.err.println(
 			  "Por favor forneça o IP do seu adversário"); throw new
 			  RemoteException(); } String host = args[0]; InetAddress
@@ -157,13 +156,12 @@ public class Game {
 				while(!ori.matches("[V]|[H]")){
 					System.out.println("Digite apenas V ou H");
 					ori = scanner.next();
-				}
-				
-				ori = ori.toLowerCase();
-			}
+
 		}
 		user.setShipList(ships);
 		*/
+	
+
 		
 		Scanner scanner = new Scanner(System.in);
 		user.setPoints(23);
@@ -201,5 +199,6 @@ public class Game {
 		
 		return false;
 	}
+
 
 }
