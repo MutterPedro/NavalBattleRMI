@@ -3,6 +3,8 @@ package br.com.sd.naval.view;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -21,13 +23,13 @@ public class Game {
 	public static void main(String[] args) {
 
 		try {
-			/*
-			 * if(args.length < 1){ System.err.println(
-			 * "Por favor forneça o IP do seu adversário"); throw new
-			 * RemoteException(); } String host = args[0]; InetAddress
-			 * IP=InetAddress.getLocalHost();
-			 * System.setProperty("java.rmi.server.hostname",IP.getHostName());
-			 */
+			
+			  if(args.length < 1){ System.err.println(
+			  "Por favor forneça o IP do seu adversário"); throw new
+			  RemoteException(); } String host = args[0]; InetAddress
+			  IP=InetAddress.getLocalHost();
+			  System.setProperty("java.rmi.server.hostname",IP.getHostName());
+			 
 
 			Enumeration e = NetworkInterface.getNetworkInterfaces();
 			while (e.hasMoreElements()) {
@@ -47,21 +49,22 @@ public class Game {
 			NavalBattle stub = (NavalBattle) UnicastRemoteObject.exportObject(user, 0);
 
 			// Register the remote object with a Java RMI registry
-			// Registry registry = LocateRegistry.getRegistry();
-			// registry.rebind("Naval", stub);
+			 Registry registry = LocateRegistry.getRegistry();
+			 registry.rebind("Naval", stub);
 
 			// Registry registryRemote = null;
 			NavalBattle stubRemote = new User();
 
-			/*
-			 * System.out.println("Procurando outro jogador...");
-			 * while(registryRemote == null){ Thread.sleep(1000); try{
-			 * registryRemote = LocateRegistry.getRegistry(host); stubRemote =
-			 * (NavalBattle) registryRemote.lookup("Naval"); } catch (Exception
-			 * e){
-			 * 
-			 * } }
-			 */
+			
+			  System.out.println("Procurando outro jogador...");
+			  Object registryRemote = null;
+			while(registryRemote == null){ Thread.sleep(1000); try{
+			  registryRemote = LocateRegistry.getRegistry(host); stubRemote =
+			  (NavalBattle) ((Registry) registryRemote).lookup("Naval"); } catch (Exception
+			  e1){
+			  
+			  } }
+			 
 
 			initGame(user, stubRemote);
 
