@@ -23,12 +23,13 @@ public class Game {
 	public static void main(String[] args) {
 
 		try {
-			  if(args.length < 1){ System.err.println(
-			  "Por favor forneÃ§a o IP do seu adversÃ¡rio"); throw new
-			  RemoteException(); } String host = args[0]; InetAddress
-			  IP=InetAddress.getLocalHost();
-			  System.setProperty("java.rmi.server.hostname",IP.getHostName());
-			 
+			if (args.length < 1) {
+				System.err.println("Por favor forneÃ§a o IP do seu adversÃ¡rio");
+				throw new RemoteException();
+			}
+			String host = args[0];
+			InetAddress IP = InetAddress.getLocalHost();
+			System.setProperty("java.rmi.server.hostname", IP.getHostName());
 
 			Enumeration e = NetworkInterface.getNetworkInterfaces();
 			while (e.hasMoreElements()) {
@@ -37,9 +38,10 @@ public class Game {
 				while (ee.hasMoreElements()) {
 					InetAddress i = (InetAddress) ee.nextElement();
 
-					/*if (!n.isLoopback()) {
-						System.out.println("IP do jogo" + i.getHostAddress());
-					}*/
+					/*
+					 * if (!n.isLoopback()) { System.out.println("IP do jogo" +
+					 * i.getHostAddress()); }
+					 */
 				}
 			}
 
@@ -48,22 +50,23 @@ public class Game {
 			NavalBattle stub = (NavalBattle) UnicastRemoteObject.exportObject(user, 0);
 
 			// Register the remote object with a Java RMI registry
-			 Registry registry = LocateRegistry.getRegistry();
-			 registry.rebind("Naval", stub);
+			Registry registry = LocateRegistry.getRegistry();
+			registry.rebind("Naval", stub);
 
 			// Registry registryRemote = null;
 			NavalBattle stubRemote = new User();
 
-			
-			  System.out.println("Procurando outro jogador...");
-			  Object registryRemote = null;
-			while(registryRemote == null){ Thread.sleep(1000); try{
-			  registryRemote = LocateRegistry.getRegistry(host); stubRemote =
-			  (NavalBattle) ((Registry) registryRemote).lookup("Naval"); } catch (Exception
-			  e1){
-			  
-			  } }
-			 
+			System.out.println("Procurando outro jogador...");
+			Object registryRemote = null;
+			while (registryRemote == null) {
+				Thread.sleep(1000);
+				try {
+					registryRemote = LocateRegistry.getRegistry(host);
+					stubRemote = (NavalBattle) ((Registry) registryRemote).lookup("Naval");
+				} catch (Exception e1) {
+
+				}
+			}
 
 			initGame(user, stubRemote);
 
@@ -75,130 +78,104 @@ public class Game {
 	}
 
 	private static boolean initGame(User user, NavalBattle enemy) {
-		
-		/*Ship portaAviao = new Ship(5, "Porta AviÃ£o"); // 1
-		Ship navioDeGuerra = new Ship(4, "NÃ¡vio de Guerra"); // 1
-		Ship cruzador = new Ship(3, "Cruzador");// 1
-		Ship submarino1 = new Ship(1, "Submarino");// 3
-		Ship submarino2 = new Ship(1, "Submarino");// 3
-		Ship submarino3 = new Ship(1, "Submarino");// 3
-		Ship destruidor1 = new Ship(2, "Destruidor");// 2
-		Ship destruidor2 = new Ship(2, "Destruidor");// 2
 
-		List<Ship> ships = new ArrayList<>();
-		ships.add(submarino1);
-		ships.add(submarino2);
-		ships.add(submarino3);
-		ships.add(destruidor2);
-		ships.add(destruidor1);
-		ships.add(navioDeGuerra);
-		ships.add(cruzador);
-		ships.add(portaAviao);
+		/*
+		 * Ship portaAviao = new Ship(5, "Porta AviÃ£o"); // 1 Ship navioDeGuerra
+		 * = new Ship(4, "NÃ¡vio de Guerra"); // 1 Ship cruzador = new Ship(3,
+		 * "Cruzador");// 1 Ship submarino1 = new Ship(1, "Submarino");// 3 Ship
+		 * submarino2 = new Ship(1, "Submarino");// 3 Ship submarino3 = new
+		 * Ship(1, "Submarino");// 3 Ship destruidor1 = new Ship(2,
+		 * "Destruidor");// 2 Ship destruidor2 = new Ship(2, "Destruidor");// 2
+		 * 
+		 * List<Ship> ships = new ArrayList<>(); ships.add(submarino1);
+		 * ships.add(submarino2); ships.add(submarino3); ships.add(destruidor2);
+		 * ships.add(destruidor1); ships.add(navioDeGuerra);
+		 * ships.add(cruzador); ships.add(portaAviao);
+		 * 
+		 * user.setSelfMap(new NavalMap(MAP_SIZE, MAP_SIZE));
+		 * 
+		 * Scanner scanner = new Scanner(System.in);
+		 * 
+		 * for (Ship ship : ships) { user.getSelfMap().showMap();
+		 * 
+		 * System.out.println("Em qual posiï¿½ï¿½o deseja inserir o " +
+		 * ship.getName()); String pos = scanner.next();
+		 * while(!pos.matches("[A-Z][0-9]{1,2}")){ System.out.println(
+		 * "Utilize o padrï¿½o correto, ex.: A10"); pos = scanner.next();
+		 * 
+		 * }
+		 * 
+		 * String linStr = pos.replaceAll("\\D*", ""); String colStr =
+		 * pos.replaceAll("\\d*", "" );
+		 * 
+		 * int lin = ((int) (colStr.charAt(0)) - 65); int col =
+		 * Integer.parseInt(linStr) - 1;
+		 * 
+		 * Position position = new Position(); position.setX(lin);
+		 * position.setY(col); position.setHited(false);
+		 * 
+		 * System.out.println("Qual orientaï¿½ï¿½o? (V/H)" + ship.getName()); String
+		 * ori = scanner.next(); while(!ori.matches("[V]|[H]")){
+		 * System.out.println("Digite apenas V ou H"); ori = scanner.next(); }
+		 * 
+		 * ori = ori.toLowerCase();
+		 * 
+		 * while(!ship.adjustMap(position, ori.equals("h"), user.getSelfMap())){
+		 * 
+		 * System.out.println("[Posiï¿½ï¿½o Invï¿½lida]"); System.out.println(
+		 * "Informe a nova posiï¿½ï¿½o " + ship.getName()); pos = scanner.next();
+		 * while(!pos.matches("[A-Z][0-9]{1,2}")){ System.out.println(
+		 * "Utilize o padrï¿½o correto, ex.: A10"); pos = scanner.next();
+		 * 
+		 * }
+		 * 
+		 * linStr = pos.replaceAll("\\D*", ""); colStr = pos.replaceAll("\\d*",
+		 * "" );
+		 * 
+		 * lin = ((int) (colStr.charAt(0)) - 65); col = Integer.parseInt(linStr)
+		 * - 1;
+		 * 
+		 * position.setX(lin); position.setY(col); position.setHited(false);
+		 * 
+		 * System.out.println("Qual a nova orientaï¿½ï¿½o? (V/H)" + ship.getName());
+		 * ori = scanner.next(); while(!ori.matches("[V]|[H]")){
+		 * System.out.println("Digite apenas V ou H"); ori = scanner.next();
+		 * 
+		 * } user.setShipList(ships);
+		 */
 
-		user.setSelfMap(new NavalMap(MAP_SIZE, MAP_SIZE));
-		
-		Scanner scanner = new Scanner(System.in);
-		
-		for (Ship ship : ships) {
-			user.getSelfMap().showMap();
-
-			System.out.println("Em qual posição deseja inserir o " + ship.getName());
-			String pos = scanner.next();
-			while(!pos.matches("[A-Z][0-9]{1,2}")){
-				System.out.println("Utilize o padrão correto, ex.: A10");
-				pos = scanner.next();
-
-			}
-			
-			String linStr = pos.replaceAll("\\D*", "");
-			String colStr = pos.replaceAll("\\d*", "" );
-			
-			int lin = ((int) (colStr.charAt(0)) - 65);
-			int col = Integer.parseInt(linStr) - 1;
-			
-			Position position = new Position();
-			position.setX(lin);
-			position.setY(col);
-			position.setHited(false);
-
-			System.out.println("Qual orientação? (V/H)" + ship.getName());
-			String ori = scanner.next();
-			while(!ori.matches("[V]|[H]")){
-				System.out.println("Digite apenas V ou H");
-				ori = scanner.next();
-			}
-			
-			ori = ori.toLowerCase();
-			
-			while(!ship.adjustMap(position, ori.equals("h"), user.getSelfMap())){
-				
-				System.out.println("[Posição Inválida]");
-				System.out.println("Informe a nova posição " + ship.getName());
-				pos = scanner.next();
-				while(!pos.matches("[A-Z][0-9]{1,2}")){
-					System.out.println("Utilize o padrão correto, ex.: A10");
-					pos = scanner.next();
-
-				}
-				
-				linStr = pos.replaceAll("\\D*", "");
-				colStr = pos.replaceAll("\\d*", "" );
-				
-				lin = ((int) (colStr.charAt(0)) - 65);
-				col = Integer.parseInt(linStr) - 1;
-				
-				position.setX(lin);
-				position.setY(col);
-				position.setHited(false);
-
-				System.out.println("Qual a nova orientação? (V/H)" + ship.getName());
-				ori = scanner.next();
-				while(!ori.matches("[V]|[H]")){
-					System.out.println("Digite apenas V ou H");
-					ori = scanner.next();
-
-		}
-		user.setShipList(ships);
-		*/
-	
-
-		
 		Scanner scanner = new Scanner(System.in);
 		user.setPoints(23);
 		String pos, linStr, colStr;
 		int row, col;
-		while(user.getPoints() != 0){
-			
-			System.out.println("[Sua Vez] Escolha a posição de ataque!");
-			System.out.print("Posição: ");
-			pos = scanner.next();
-			while(!pos.matches("[A-Z][0-9]{1,2}")){
-				System.out.println("Utilize o padrão correto, ex.: A10");
-				pos = scanner.next();
+		while (user.getPoints() != 0) {
 
-			}
-			
-			linStr = pos.replaceAll("\\D*", "");
-			colStr = pos.replaceAll("\\d*", "" );
-			
-			row = ((int) (colStr.charAt(0)) - 65);
-			col = Integer.parseInt(linStr) - 1;
-			
-			
-			
-			try {
-				user.getEnemyMap();
-				user.attack(row, col, enemy);
-			} catch (RemoteException e) {
-				e.printStackTrace();
+			if (user.isTurn()) {
+
+				try {
+					user.getEnemyMap().showMap();
+					System.out.println("[Sua Vez] Escolha a posiÃ§Ã£o de ataque!");
+					pos = scanner.next();
+					while (!pos.matches("[A-Z][0-9]{1,2}")) {
+						System.out.println("Utilize o padrÃ£o correto, ex.: A10");
+						pos = scanner.next();
+
+					}
+
+					linStr = pos.replaceAll("\\D*", "");
+					colStr = pos.replaceAll("\\d*", "");
+
+					row = ((int) (colStr.charAt(0)) - 65);
+					col = Integer.parseInt(linStr) - 1;
+
+					user.attack(row, col, enemy);
+				} catch (RemoteException e) {
+					e.printStackTrace();
+				}
 			}
 		}
-		
-		
-		
-		
+
 		return false;
 	}
-
 
 }
