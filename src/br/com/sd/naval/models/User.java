@@ -1,9 +1,11 @@
 package br.com.sd.naval.models;
 
 import java.rmi.RemoteException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import br.com.sd.naval.interfaces.NavalBattle;
 
@@ -69,9 +71,18 @@ public class User implements NavalBattle {
 	public boolean attack(int row, int col, NavalBattle stub) throws RemoteException {
 		System.out.println("Atacou " + row + "/" + col);
 		Map<Integer, String> attack = stub.handleAttack(row, col);
-		this.getEnemyMap().setMapPoint(row, col, (int) attack.keySet());
 		
-		return false;
+		Set<Integer> setKey = attack.keySet();
+		
+		int hit = setKey.iterator().next();
+		
+		this.getEnemyMap().setMapPoint(row, col, hit);
+		
+		if(hit == 1){
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 	@Override
@@ -81,14 +92,14 @@ public class User implements NavalBattle {
 		int hit = this.getSelfMap().getMap()[row][col];
 		switch (hit) {
 			case 0:
-				msg = "Água";
+				msg = "Ã�gua";
 				break;
 			case 1:
-				msg = "Acertou o návio "+this.shipInPosition(row, col).getName();
+				msg = "Acertou o nÃ¡vio "+this.shipInPosition(row, col).getName();
 				this.getSelfMap().setMapPoint(row, col, 2);
 				break;
 			default:
-				msg = "Alvo já acertado";
+				msg = "Alvo jÃ¡ acertado";
 				break;
 		}
 		Map<Integer,String> result = new HashMap<>();
@@ -97,7 +108,7 @@ public class User implements NavalBattle {
 	}
 
 	public boolean isTurn() {
-		return turn;
+		return true;
 	}
 
 	public void setTurn(boolean turn) {
