@@ -1,7 +1,7 @@
 package br.com.sd.naval.models;
 
+import java.io.IOException;
 import java.rmi.RemoteException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,6 +18,15 @@ public class User implements NavalBattle {
 	private NavalMap enemyMap;
 	private List<Ship> shipList;
 	private boolean turn;
+	private boolean winner;
+
+	public boolean isWinner() {
+		return winner;
+	}
+
+	public void setWinner(boolean winner) {
+		this.winner = winner;
+	}
 
 	public String getName() {
 		return name;
@@ -69,16 +78,22 @@ public class User implements NavalBattle {
 
 	@Override
 	public boolean attack(int row, int col, NavalBattle stub) throws RemoteException {
+		try {
+			Runtime.getRuntime().exec("clear");
+		} catch (IOException e) {			
+			e.printStackTrace();
+		}
 		System.out.println("Atacou " + row + "/" + col);
 		Map<Integer, String> attack = stub.handleAttack(row, col);
-		
+
 		Set<Integer> setKey = attack.keySet();
-		
+
 		int hit = setKey.iterator().next();
-		
+
 		this.getEnemyMap().setMapPoint(row, col, hit);
-		
-		if(hit == 1){
+		System.out.println(attack.get(hit));
+
+		if (hit == 1) {
 			return true;
 		} else {
 			return false;
@@ -91,40 +106,54 @@ public class User implements NavalBattle {
 		String msg;
 		int hit = this.getSelfMap().getMap()[row][col];
 		switch (hit) {
-			case 0:
-				msg = "Ã�gua";
-				break;
-			case 1:
-				msg = "Acertou o nÃ¡vio "+this.shipInPosition(row, col).getName();
-				this.getSelfMap().setMapPoint(row, col, 2);
-				break;
-			default:
-				msg = "Alvo jÃ¡ acertado";
-				break;
+		case 0:
+			msg = "Água";
+			hit = 3;
+			break;
+		case 1:
+			msg = "Acertou o návio " + this.shipInPosition(row, col).getName();
+			this.getSelfMap().setMapPoint(row, col, 2);
+			this.setPoints(points - 1);
+			hit = 2;
+			break;
+		default:
+			msg = "Alvo já acertado";
+			break;
 		}
-		Map<Integer,String> result = new HashMap<>();
+		System.out.println(msg);
+		Map<Integer, String> result = new HashMap<>();
 		result.put(hit, msg);
+		turn = true;
 		return result;
 	}
 
+	@Override
 	public boolean isTurn() {
-		return true;
+		return turn;
 	}
 
+	@Override
 	public void setTurn(boolean turn) {
 		this.turn = turn;
 	}
-	
-	public Ship shipInPosition(int row, int col){
-		for(Ship ship : shipList){
-			for(Position pos : ship.getPositions()){
-				if(pos.getX() == row && pos.getY() == col){
+
+	public Ship shipInPosition(int row, int col) {
+		for (Ship ship : shipList) {
+			for (Position pos : ship.getPositions()) {
+				if (pos.getX() == row && pos.getY() == col) {
 					return ship;
 				}
 			}
 		}
-		
+
 		return null;
+	}
+
+	@Override
+	public boolean win() throws RemoteException {
+		System.out.println("Parábens, você destruio todos os barcos do adversário!");
+		this.winner = true;
+		return true;
 	}
 
 }

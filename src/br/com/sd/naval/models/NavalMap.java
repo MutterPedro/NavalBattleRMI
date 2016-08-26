@@ -36,7 +36,7 @@ public class NavalMap {
 		char alfa = 'A';
 		System.out.print("  ");
 		for(int i=0;i<this.numRow;i++){
-			System.out.print(" " + (i+1) + " ");
+			System.out.print(" " + (i+1) + "  ");
 			System.out.print(" ");
 		}
 		
